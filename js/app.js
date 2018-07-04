@@ -25,6 +25,19 @@ function shuffle(array) {
     return array;
 }
 
+const deck = document.querySelector('.deck');
+
+deck.addEventListener('click', event => {
+  const clickTarget = event.target;
+  if(clickTarget.classList.contains('card')) {
+    toggleCard(clickTarget);
+  }
+});
+
+function toggleCard(clickTarget){
+  clickTarget.classList.toggle('open');
+  clickTarget.classList.toggle('show');
+}
 
 /*
  * set up the event listener for a card. If a card is clicked:
