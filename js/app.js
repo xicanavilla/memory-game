@@ -27,18 +27,61 @@ function shuffle(array) {
 
 const deck = document.querySelector('.deck');
 
+function shuffleDeck() {
+  const cardsToShuffle = Array.from(document.querySelectorAll('.deck li'));
+  const shuffledCards = shuffle(cardsToShuffle);
+  for (card of shuffledCards) {
+    deck.appendChild(card);
+  }
+}
+shuffleDeck();
+
+let toggledCards = [];
+
 deck.addEventListener('click', event => {
   const clickTarget = event.target;
-  if(clickTarget.classList.contains('card')) {
+  if(clickIsValid(clickTarget)) {
     toggleCard(clickTarget);
+    addToggledCard(clickTarget);
+    if(toggledCards.length === 2) {
+      matchCheck(clickTarget);
+    }
   }
 });
 
-function toggleCard(clickTarget){
-  clickTarget.classList.toggle('open');
-  clickTarget.classList.toggle('show');
+function clickIsValid(clickTarget) {
+  return (
+    clickTarget.classList.contains('card') &&
+    !clickTarget.classList.contains('match') &&
+    toggledCards.length < 2 &&
+    !toggledCards.includes(clickTarget)
+  );
 }
 
+function toggleCard(card){
+  card.classList.toggle('open');
+  card.classList.toggle('show');
+}
+
+function addToggledCard(clickTarget){
+  toggledCards.push(clickTarget);
+  console.log(toggledCards);
+}
+
+function matchCheck() {
+  if (toggledCards[0].firstElementChild.className === toggledCards[1].firstElementChild.className) {
+    toggledCards[0].classList.toggle('match');
+    toggledCards[1].classList.toggle('match');
+    toggledCards = [];
+  }
+  else {
+    setTimeout(() => {
+      toggleCard(toggledCards[0]);
+      toggleCard(toggledCards[1]);
+      toggledCards = [];
+    }, 1000);
+  }
+}
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
