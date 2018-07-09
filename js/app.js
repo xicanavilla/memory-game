@@ -45,6 +45,7 @@ deck.addEventListener('click', event => {
     addToggledCard(clickTarget);
     if(toggledCards.length === 2) {
       matchCheck(clickTarget);
+      addCount();
     }
   }
 });
@@ -82,6 +83,16 @@ function matchCheck() {
     }, 1000);
   }
 }
+
+let moves = 0;
+
+function addCount() {
+  moves++;
+  const movesText = document.querySelector('.moves');
+  movesText.innerHTML = moves;
+}
+
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
