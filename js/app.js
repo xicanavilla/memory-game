@@ -46,6 +46,7 @@ deck.addEventListener('click', event => {
     if(toggledCards.length === 2) {
       matchCheck(clickTarget);
       addCount();
+      starScores();
     }
   }
 });
@@ -91,6 +92,24 @@ function addCount() {
   const movesText = document.querySelector('.moves');
   movesText.innerHTML = moves;
 }
+
+function starScores() {
+  if (moves === 5 || moves === 10) {
+    removeStar();
+  }
+}
+
+// function removeStar() {
+//   const starlist = document.querySelectorAll('.stars li');
+//   for (star of starList) {
+//     if (star.style.display !== 'none') {
+//       star.style.display = 'none';
+//       break;
+//     }
+//   }
+// }
+// removeStar();
+
 
 
 /*
