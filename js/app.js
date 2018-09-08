@@ -10,6 +10,16 @@
  *   - add each card's HTML to the page
  */
 
+//universal variables
+const deck = document.querySelector('.deck');
+let toggledCards = [];
+let moves = 0;
+let clockOff = true;
+let time = 0;
+let clockId;
+let matches = 0;
+const totalPairs = 8;
+
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -25,8 +35,6 @@ function shuffle(array) {
     return array;
 }
 
-const deck = document.querySelector('.deck');
-
 function shuffleDeck() {
   const cardsToShuffle = Array.from(document.querySelectorAll('.deck li'));
   const shuffledCards = shuffle(cardsToShuffle);
@@ -36,17 +44,20 @@ function shuffleDeck() {
 }
 shuffleDeck();
 
-let toggledCards = [];
-
 deck.addEventListener('click', event => {
   const clickTarget = event.target;
   if(clickIsValid(clickTarget)) {
+    if (clockOff) {
+      startClock();
+      clockOff = false;
+    }
     toggleCard(clickTarget);
     addToggledCard(clickTarget);
     if(toggledCards.length === 2) {
       matchCheck(clickTarget);
       addCount();
       starScores();
+      checkWin();
     }
   }
 });
@@ -75,6 +86,7 @@ function matchCheck() {
     toggledCards[0].classList.toggle('match');
     toggledCards[1].classList.toggle('match');
     toggledCards = [];
+    matches++;
   }
   else {
     setTimeout(() => {
@@ -85,33 +97,134 @@ function matchCheck() {
   }
 }
 
-let moves = 0;
-
 function addCount() {
   moves++;
   const movesText = document.querySelector('.moves');
   movesText.innerHTML = moves;
 }
 
+//hides a star after user reaches 12 and 17 moves
 function starScores() {
-  if (moves === 5 || moves === 10) {
-    removeStar();
+  if (moves === 12 || moves === 17) {
+    hideStar();
   }
 }
 
-// function removeStar() {
-//   const starlist = document.querySelectorAll('.stars li');
-//   for (star of starList) {
-//     if (star.style.display !== 'none') {
-//       star.style.display = 'none';
-//       break;
-//     }
-//   }
-// }
-// removeStar();
+function startClock() {
+  clockId = setInterval(() => {
+    time++;
+    displayTime();
+  }, 1000);
+}
+
+function displayTime() {
+  const clock = document.querySelector('.clock');
+  const minutes = Math.floor(time/60);
+  const seconds = time % 60;
+  //displays a 0 before the amount of seconds if under 2 digits
+  if (seconds < 10) {
+    clock.innerHTML = minutes + ":0" + seconds;
+  } else {
+    clock.innerHTML = minutes + ":" + seconds;
+  }
+}
+
+function stopClock(){
+  clearInterval(clockId);
+}
+
+function hideStar() {
+  const starList = document.querySelectorAll('.stars li');
+  for (star of starList) {
+    if(star.style.display !== 'none'){
+      star.style.display = 'none';
+      break;
+    }
+  }
+}
+
+function toggleModal() {
+  const modal = document.querySelector(".modal_background")
+  modal.classList.toggle('hide');
+}
+
+function fillModal() {
+  const timeStat = document.querySelector('.modal_time');
+  const clockTime = document.querySelector('.clock').innerHTML;
+  const movesStat = document.querySelector('.modal_moves');
+  const starsStat = document.querySelector('.modal_stars');
+  const stars = getStars();
+
+  timeStat.innerHTML = `Time = ${clockTime}`;
+  movesStat.innerHTML = `Moves = ${moves}`;
+  starsStat.innerHTML = `Star Power = ${stars}`;
+}
+
+function getStars() {
+  stars = document.querySelectorAll('.stars li');
+  starCount = 0;
+  for (star of stars) {
+    if(star.style.display !== 'none') {
+      starCount++;
+    }
+  }
+  return starCount;
+}
+
+document.querySelector('.modal_cancel').addEventListener('click', () => {
+  toggleModal();
+});
+document.querySelector('.modal_close').addEventListener('click', () => {
+  toggleModal();
+});
+document.querySelector('.modal_replay').addEventListener('click', replay);
+document.querySelector('.restart').addEventListener('click', reset);
+
+function reset() {
+  stopClock();
+  time = 0;
+  clockOff = true;
+  displayTime();
+  moves = 0;
+  document.querySelector('.moves').innerHTML = moves;
+  resetStars();
+  shuffleDeck();
+  resetCards();
+  matches = 0;
+}
+
+function resetStars() {
+  stars = 0;
+  const starList = document.querySelectorAll('.stars li');
+  for (star of starList) {
+    star.style.display = 'inline';
+  }
+}
+
+function endGame() {
+  stopClock();
+  fillModal();
+  toggleModal();
+}
+
+function checkWin() {
+  if (matches === totalPairs) {
+    endGame();
+  }
+}
 
 
+function replay() {
+  reset();
+  toggleModal();
+}
 
+function resetCards() {
+  const cards = document.querySelectorAll('.deck li');
+  for (let card of cards) {
+    card.className = 'card';
+  }
+}
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)

@@ -16,8 +16,9 @@
         </header>
 
         <section class="score-panel">
+          <!-- timer element -->
           <span class="clock">0:00</span>
-          
+
         	<ul class="stars">
         		<li><i class="fa fa-star"></i></li>
         		<li><i class="fa fa-star"></i></li>
@@ -81,6 +82,22 @@
                 <i class="fa fa-cube"></i>
             </li>
         </ul>
+    </div>
+    <div class="modal_background hide">
+      <div class="modal_body">
+        <div class="modal_heading">
+          <h1 class="modal_title">Congratulations!</h1>
+          <span class="modal_close">x</span>
+        </div>
+        <div class="modal_stats">
+          <span class="modal_time">Time:</span>
+          <span class="modal_stars">Star Power:</span>
+          <span class="modal_moves">Moves:</span>
+      </div>
+      <div class="modal_buttons">
+        <button class="modal_button modal_cancel">Cancel</button>
+        <button class="modal_button modal_replay">Replay</button>
+      </div>
     </div>
 
     <script src="js/app.js"></script>
